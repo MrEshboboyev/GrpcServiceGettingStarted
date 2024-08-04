@@ -8,7 +8,26 @@ builder.Services.AddGrpc().AddJsonTranscoding();
 // adding gRPC reflection
 builder.Services.AddGrpcReflection();
 
+// with swagger
+builder.Services.AddGrpcSwagger();
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc("v1",
+        new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "grpc transcoding",
+            Version = "v1",
+        });
+});
+
 var app = builder.Build();
+
+// map swagger
+app.MapSwagger();
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("/swagger/v1/swagger.json", "my api v1");
+});
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GreeterService>();
